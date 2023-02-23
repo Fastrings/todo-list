@@ -23,10 +23,6 @@ def send_login_email(request):
 
 def login(request):
     user = auth.authenticate(request=request, uid=request.GET.get('token'))
-    if user is not None:
-        auth.login(request, user)
-    return redirect('/')
-
-def logout(request):
-    auth.logout(request)
+    if user:
+        auth.login(request=request, user=user)
     return redirect('/')
