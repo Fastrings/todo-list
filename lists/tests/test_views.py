@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from unittest.mock import patch, Mock
 import unittest
 from django.http import HttpRequest
-from lists.views import new_list
+from lists.views import new_list, share_list
 
 User = get_user_model()
 
@@ -182,3 +182,23 @@ class NewListViewUnitTest(unittest.TestCase):
         new_list(self.request)
         self.assertFalse(mock_form.save.called)
 
+class ShareListTest(TestCase):
+
+    def test_sharing_a_list_via_post(self):
+        sharee = User.objects.create(email='share.with@me.com')
+        list_ = List.objects.create()
+        self.client.post(
+            f'/lists/{list_.id}/share',
+            {'sharee': 'share.with@me.com'}
+        )
+        self.assertIn(sharee, list_.shared_with.all())
+
+
+    def test_redirects_after_POST(self):
+        sharee = User.objects.create(email='share.with@me.com')
+        list_ = List.objects.create()
+        response = self.client.post(
+            f'/lists/{list_.id}/share',
+            {'sharee': 'share.with@me.com'}
+        )
+        self.assertRedirects(response, list_.get_absolute_url())
