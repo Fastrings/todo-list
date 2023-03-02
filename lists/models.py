@@ -27,3 +27,6 @@ class Item(models.Model):
     class Meta:
         unique_together = ('list', 'text')
         ordering = ('id',)
+    
+    def get_absolute_url(self):
+        return reverse('view_list', args=[self.list.id])
