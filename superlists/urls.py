@@ -18,9 +18,11 @@ from lists import views as list_views
 from lists import urls as list_urls
 from django.conf.urls import include
 from accounts import urls as accounts_urls
+from lists.api import router
 
 urlpatterns = [
     re_path(r'^$', list_views.HomePageView.as_view(), name='home'),
     re_path(r'^lists/', include(list_urls)),
-    re_path(r'^accounts/', include(accounts_urls))
+    re_path(r'^accounts/', include(accounts_urls)),
+    re_path(r'^api/', include(router.urls)),
 ]
